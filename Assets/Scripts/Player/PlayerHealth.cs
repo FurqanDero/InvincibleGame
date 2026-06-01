@@ -14,6 +14,8 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (currentHealth <= 0) return; // already dead
+
         currentHealth = Mathf.Max(currentHealth - damage, 0f);
 
         if (hudManager != null)
@@ -41,5 +43,13 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Mark defeated!");
+
+        // Disable player input
+        GetComponent<PlayerController>().enabled = false;
+        GetComponent<CombatController>().enabled = false;
+
+        // Tell GameManager
+        if (GameManager.Instance != null)
+            GameManager.Instance.TriggerGameOver();
     }
 }

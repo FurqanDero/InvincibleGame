@@ -4,38 +4,42 @@ public class EnemyHealth : MonoBehaviour
 {
     public float maxHealth = 100f;
     private float currentHealth;
+    private EnemyAI enemyAI;
+
+    [Header("Knockback")]
+    public float knockbackForce = 8f;
 
     void Start()
     {
         currentHealth = maxHealth;
+        enemyAI = GetComponent<EnemyAI>();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, Vector2 knockbackDirection)
     {
-        currentHealth -= damage;
-        Debug.Log(gameObject.name + " took " + damage +
-                  " damage. HP: " + currentHealth);
+        if (enemyAI != null &&
+            enemyAI.currentState == EnemyAI.EnemyState.Death)
+            return;
 
-        StartCoroutine(DamageFlash());
+        currentHealth -= damage;
+        Debug.Log(gameObject.name + " HP: " + currentHealth);
+
+        // Trigger hurt state with knockback
+        if (enemyAI != null)
+            enemyAI.TriggerHurt(knockbackDirection, knockbackForce);
 
         if (currentHealth <= 0)
-            Die();
-    }
-
-    System.Collections.IEnumerator DamageFlash()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
         {
-            sr.color = Color.white;
-            yield return new WaitForSeconds(0.1f);
-            sr.color = Color.red;
+            if (enemyAI != null)
+                enemyAI.TriggerDeath();
+            else
+                Destroy(gameObject);
         }
     }
 
-    void Die()
+    // Overload without knockback for backwards compatibility
+    public void TakeDamage(float damage)
     {
-        Debug.Log(gameObject.name + " defeated!");
-        Destroy(gameObject);
+        TakeDamage(damage, Vector2.right);
     }
 }

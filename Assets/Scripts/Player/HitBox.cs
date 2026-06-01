@@ -14,7 +14,6 @@ public class Hitbox : MonoBehaviour
 
     public void CheckHit()
     {
-        // Manually check for overlapping colliders
         Collider2D[] hits = Physics2D.OverlapBoxAll(
             transform.position,
             boxSize,
@@ -23,7 +22,6 @@ public class Hitbox : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-
             if (hit.CompareTag("Enemy"))
             {
                 EnemyHealth enemyHealth =
@@ -31,7 +29,18 @@ public class Hitbox : MonoBehaviour
 
                 if (enemyHealth != null)
                 {
-                    enemyHealth.TakeDamage(damage);
+                    // Calculate knockback direction from 
+                    // player to enemy
+                    Vector2 knockbackDir = (hit.transform.position -
+                        transform.root.position).normalized;
+
+                    // Add upward force for aerial slam
+                    if (attackType == "AerialSlam")
+                        knockbackDir = new Vector2(
+                            knockbackDir.x, 1f
+                        ).normalized;
+
+                    enemyHealth.TakeDamage(damage, knockbackDir);
 
                     CombatController combat =
                         GetComponentInParent<CombatController>();
@@ -39,10 +48,6 @@ public class Hitbox : MonoBehaviour
                         combat.GainSpecialMeter(
                             combat.specialMeterGainPerHit
                         );
-
-                    Debug.Log(attackType + " hit: " +
-                              hit.gameObject.name +
-                              " for " + damage);
                 }
             }
         }
