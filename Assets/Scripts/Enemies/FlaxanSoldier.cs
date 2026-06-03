@@ -240,25 +240,22 @@ public class FlaxanSoldier : MonoBehaviour
     {
         if (projectilePrefab == null) return;
 
-        // Spawn at fire point or self position
         Vector3 spawnPos = firePoint != null ?
             firePoint.position : transform.position;
 
         GameObject proj = Instantiate(
-            projectilePrefab,
-            spawnPos,
-            Quaternion.identity
+            projectilePrefab, spawnPos, Quaternion.identity
         );
 
-        // Aim at player
-        Vector2 direction = (player.position -
-                            spawnPos).normalized;
+        Vector2 direction = (player.position - spawnPos).normalized;
 
         Projectile p = proj.GetComponent<Projectile>();
         if (p != null)
             p.SetDirection(direction);
 
-        Debug.Log("Flaxan fired projectile!");
+        // ─── Play projectile sound ────────────────
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayProjectile();
     }
 
     // ─── HELPERS ─────────────────────────────────

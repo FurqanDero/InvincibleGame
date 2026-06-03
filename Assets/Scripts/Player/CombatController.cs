@@ -77,12 +77,34 @@ public class CombatController : MonoBehaviour
         hitboxCollider.enabled = true;
         hitboxScript.CheckHit();
 
+        // ─── Play attack sound ─────────────────────
+        if (AudioManager.Instance != null)
+        {
+            switch (attackName)
+            {
+                case "Punch":
+                    AudioManager.Instance.PlayPunch();
+                    break;
+                case "Kick":
+                    AudioManager.Instance.PlayKick();
+                    break;
+                case "AerialSlam":
+                    AudioManager.Instance.PlaySlam();
+                    break;
+                case "Special":
+                    AudioManager.Instance.PlaySpecial();
+                    // ─── Bloom burst on special ───────────────
+                    if (PostProcessController.Instance != null)
+                        PostProcessController.Instance.TriggerSpecialEffect();
+                    break;
+            }
+        }
+
         if (attackName == "AerialSlam" || attackName == "Special")
         {
             if (cameraShake != null)
                 cameraShake.Shake(0.3f, 0.2f);
         }
-
     }
 
     void HandleAttackTimer()

@@ -20,18 +20,20 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(float damage, Vector2 knockbackDirection)
     {
-        // Don't damage dead enemies
         if (enemyAI != null &&
             enemyAI.currentState == EnemyAI.EnemyState.Death)
             return;
         if (flaxanSoldier != null &&
-            flaxanSoldier.currentState == FlaxanSoldier.FlaxanState.Death)
+            flaxanSoldier.currentState ==
+            FlaxanSoldier.FlaxanState.Death)
             return;
 
         currentHealth -= damage;
-        Debug.Log(gameObject.name + " HP: " + currentHealth);
 
-        // Trigger hurt on whichever AI is present
+        // ─── Play hurt sound ──────────────────────
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayEnemyHurt();
+
         if (enemyAI != null)
             enemyAI.TriggerHurt(knockbackDirection, knockbackForce);
         else if (flaxanSoldier != null)
@@ -39,6 +41,10 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            // ─── Play death sound ─────────────────
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlayEnemyDeath();
+
             if (enemyAI != null)
                 enemyAI.TriggerDeath();
             else if (flaxanSoldier != null)
@@ -47,7 +53,6 @@ public class EnemyHealth : MonoBehaviour
                 Destroy(gameObject);
         }
     }
-
     public void TakeDamage(float damage)
     {
         TakeDamage(damage, Vector2.right);
