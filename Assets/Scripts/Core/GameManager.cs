@@ -40,12 +40,16 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        // Unfreeze time before reloading
         Time.timeScale = 1f;
         isGameOver = false;
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().name
-        );
+        SceneManager.LoadScene("Level_01");
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1f;
+        isGameOver = false;
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void QuitGame()

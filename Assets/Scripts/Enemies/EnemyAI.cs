@@ -219,12 +219,13 @@ public class EnemyAI : MonoBehaviour
         currentState = EnemyState.Death;
         rb.linearVelocity = Vector2.zero;
         sr.color = Color.grey;
-
-        // Disable collider
         GetComponent<Collider2D>().enabled = false;
 
+        // Notify tracker
+        if (EnemyTracker.Instance != null)
+            EnemyTracker.Instance.EnemyDefeated();
+
         Destroy(gameObject, 1f);
-        Debug.Log(gameObject.name + " defeated!");
     }
 
     // ─── DETECTION ───────────────────────────────

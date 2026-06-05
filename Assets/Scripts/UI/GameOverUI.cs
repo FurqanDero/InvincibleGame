@@ -25,4 +25,9 @@ public class GameOverUI : MonoBehaviour
     {
         GameManager.Instance.QuitGame();
     }
+
+    public void OnMainMenuPressed()
+    {
+        GameManager.Instance.GoToMainMenu();
+    }
 }
