@@ -4,7 +4,7 @@ A 2D side-scrolling brawler built in Unity 6 as a
 first game development project.
 
 ## Play it live
-[Play on itch.io](your-itch-url-here)
+[Play on itch.io](https://invincidero26.itch.io/invincible)
 
 ## Built with
 - Unity 6 (Universal 2D)
