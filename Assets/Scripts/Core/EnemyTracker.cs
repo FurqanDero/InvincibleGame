@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyTracker : MonoBehaviour
 {
     public static EnemyTracker Instance;
+    public bool hasBossScene = false;
 
     private int totalEnemies = 0;
     private int defeatedEnemies = 0;
@@ -17,10 +19,8 @@ public class EnemyTracker : MonoBehaviour
 
     void Start()
     {
-        // Count all enemies in scene at start
         totalEnemies = GameObject
             .FindGameObjectsWithTag("Enemy").Length;
-
         Debug.Log("Total enemies: " + totalEnemies);
     }
 
@@ -36,8 +36,24 @@ public class EnemyTracker : MonoBehaviour
 
     void TriggerVictory()
     {
-        Debug.Log("ALL ENEMIES DEFEATED — VICTORY!");
+        // Check for boss in current scene
+        OmniMan omniMan =
+            Object.FindAnyObjectByType<OmniMan>();
 
+        if (omniMan != null)
+        {
+            omniMan.StartFight();
+            return;
+        }
+
+        // Load boss scene if flagged
+        if (hasBossScene)
+        {
+            SceneManager.LoadScene("BossScene");
+            return;
+        }
+
+        // Normal victory
         VictoryUI victoryUI =
             Object.FindAnyObjectByType<VictoryUI>();
         if (victoryUI != null)

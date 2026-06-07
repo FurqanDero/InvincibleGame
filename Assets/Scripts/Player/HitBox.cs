@@ -15,30 +15,25 @@ public class Hitbox : MonoBehaviour
     public void CheckHit()
     {
         Collider2D[] hits = Physics2D.OverlapBoxAll(
-            transform.position,
-            boxSize,
-            0f
+            transform.position, boxSize, 0f
         );
 
         foreach (Collider2D hit in hits)
         {
+            // Hit regular enemy
             if (hit.CompareTag("Enemy"))
             {
                 EnemyHealth enemyHealth =
                     hit.GetComponent<EnemyHealth>();
-
                 if (enemyHealth != null)
                 {
-                    // Calculate knockback direction from 
-                    // player to enemy
-                    Vector2 knockbackDir = (hit.transform.position -
+                    Vector2 knockbackDir =
+                        (hit.transform.position -
                         transform.root.position).normalized;
 
-                    // Add upward force for aerial slam
                     if (attackType == "AerialSlam")
                         knockbackDir = new Vector2(
-                            knockbackDir.x, 1f
-                        ).normalized;
+                            knockbackDir.x, 1f).normalized;
 
                     enemyHealth.TakeDamage(damage, knockbackDir);
 
@@ -46,8 +41,28 @@ public class Hitbox : MonoBehaviour
                         GetComponentInParent<CombatController>();
                     if (combat != null)
                         combat.GainSpecialMeter(
-                            combat.specialMeterGainPerHit
-                        );
+                            combat.specialMeterGainPerHit);
+                }
+            }
+
+            // Hit Omni-Man boss
+            if (hit.CompareTag("Boss"))
+            {
+                OmniMan omniMan =
+                    hit.GetComponent<OmniMan>();
+                if (omniMan != null)
+                {
+                    Vector2 knockbackDir =
+                        (hit.transform.position -
+                        transform.root.position).normalized;
+
+                    omniMan.TakeDamage(damage, knockbackDir);
+
+                    CombatController combat =
+                        GetComponentInParent<CombatController>();
+                    if (combat != null)
+                        combat.GainSpecialMeter(
+                            combat.specialMeterGainPerHit);
                 }
             }
         }
